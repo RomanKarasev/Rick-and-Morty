@@ -12,7 +12,7 @@
 //}
 
 import UIKit
-//import SDWebImage
+import SDWebImage
 
 // MARK: - MainTableViewCell
 
@@ -118,6 +118,15 @@ class MainTableViewCell: UITableViewCell {
         fatalError("init(coder: ) has not been implemented")
     }
     
+    func render(from model: ViewModel) {
+        
+        characterTitleLabel.text = model.name
+        characterStatus.text = model.status
+        characterDescription.text = "\(model.species), \(model.gender)"
+        placeLabel.text = model.origin
+        characterImageView.sd_setImage(with: URL(string: model.image), completed: nil)
+    }
+    
     
     //    @objc func watchButtonTapped() {
     //        guard let index = index else { return }
@@ -125,6 +134,7 @@ class MainTableViewCell: UITableViewCell {
     //    }
     
 }
+
 //MARK: - setConstraints
 
 extension MainTableViewCell {
