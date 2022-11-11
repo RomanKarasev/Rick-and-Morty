@@ -5,103 +5,99 @@
 //  Created by Роман Карасёв on 10.11.2022.
 //
 
-////MARK: - Protocol
-//
-//protocol WatchEpisodesButton: AnyObject {
-//    func WatchEpisodesButtonTapped(index: IndexPath)
-//}
-
 import UIKit
 import SDWebImage
 
 // MARK: - MainTableViewCell
 
-class MainTableViewCell: UITableViewCell {
+final class MainTableViewCell: UITableViewCell {
     
-    //MARK: Properties
+    static let identifier   = Constants.Strings.mainTableViewCellIdentifier
     
-    static let identifier = "MenuTableViewCell"
-    //
-    //    weak var delegate: WatchEpisodesButton?
-    //    var index: IndexPath?
-    //
+    //MARK: ImageViews
     
     let characterImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "default")
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.layer.cornerRadius = 40
+        imageView.layer.cornerRadius = Constants.CGFloafs.characterImageViewCornerRadius
         imageView.clipsToBounds = true
+        
         return imageView
     }()
     
-    let characterTitleLabel = UILabel(text: "Rick",
-                                      font: .systemFont(ofSize: 21),
-                                      alignment: .left,
-                                      textColor: .label)
     
-    let characterDescription = UILabel(text: "Человек, мужик",
-                                       font: .systemFont(ofSize: 14),
-                                       alignment: .left,
-                                       textColor: .label)
-    
-    let characterStatus: UILabel = {
-        let label = UILabel(text: "ALIVE",
-                            font: .systemFont(ofSize: 14),
-                            alignment: .center,
-                            textColor: .label)
-        label.backgroundColor = .green
-        label.layer.masksToBounds = true
-        label.layer.cornerRadius = 25 / 2
-        return label
-    }()
-    
-    let watchButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.layer.cornerRadius = 17
-        button.backgroundColor = .red
-        return button
-    }()
-    
-    let watchLabel = UILabel(text: "Watch episodes",
-                             font: .systemFont(ofSize: 14),
-                             alignment: .left,
-                             textColor: .orange)
-    
-    let watchImageView: UIImageView = {
-        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
-        imageView.image = UIImage(named: "play")
+    private let watchImageView: UIImageView = {
+        let imageView = UIImageView(frame: Constants.watchImageViewFrame)
+        imageView.image = Constants.Images.watchButtonImage
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
+    //MARK: Views
     
-    let watchView: UIView = {
+    private let watchView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
-    let placeView: UIView = {
+    private let placeView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .clear
         return view
     }()
     
-    let placeLabel = UILabel(text: "Earth (C-500A)",
-                             font: .systemFont(ofSize: 14),
-                             alignment: .left,
-                             textColor: .label)
+    //MARK: Labels
     
-    let placeButton: UIButton = {
+    private let characterTitleLabel = UILabel(text: Constants.Strings.emptyString,
+                                              font: Constants.FontSize.font21,
+                                              alignment: .left,
+                                              textColor: .label)
+    
+    private let characterDescription = UILabel(text: Constants.Strings.emptyString,
+                                               font: Constants.FontSize.font14,
+                                               alignment: .left,
+                                               textColor: .label)
+    
+    private let watchLabel = UILabel(text: Constants.Strings.watchButtonText,
+                                     font: Constants.FontSize.font14,
+                                     alignment: .left,
+                                     textColor: Constants.Colors.watchTextBackgroundColor)
+    
+    
+    private let placeLabel = UILabel(text: Constants.Strings.emptyString,
+                                     font: Constants.FontSize.font14,
+                                     alignment: .left,
+                                     textColor: .label)
+    
+    //MARK: Buttons
+#warning("TODO: сделать action для кнопок")
+    private let watchButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "map"), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.cornerRadius = Constants.CGFloafs.watchBattonCornerRadius
+        button.backgroundColor = Constants.Colors.watchBackgroundColor
+        return button
+    }()
+    
+    private let placeButton: UIButton = {
+        let button = UIButton()
+        button.setImage(Constants.Images.placeButtonImage, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
+    let characterStatus: UIButton = {
+        let button = UIButton()
+        button.setTitle(Constants.Strings.emptyString, for: .normal)
+        button.contentMode = .center
+        button.titleLabel?.font = Constants.FontSize.font14
+        button.contentEdgeInsets = Constants.characterStatusButtonInset
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.cornerRadius = Constants.CGFloafs.characterStatusCornerRadius
+        return button
+    }()
     
     // MARK: Init
     
@@ -109,30 +105,77 @@ class MainTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setConstraints()
         selectionStyle = .none
-        
-        //        watchButton.addTarget(self, action: #selector(watchButtonTapped), for: .touchUpInside)
-        
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder: ) has not been implemented")
     }
     
+    
+    //MARK: renderData from ViewModel
+    
     func render(from model: ViewModel) {
+        let mainImage = configureImage(with: model.image)
         
-        characterTitleLabel.text = model.name
-        characterStatus.text = model.status
-        characterDescription.text = "\(model.species), \(model.gender)"
-        placeLabel.text = model.origin
-        characterImageView.sd_setImage(with: URL(string: model.image), completed: nil)
+        
+        //Настройка отображения в зависимости от статуса
+        switch model.status {
+            case .alive:
+                setStatusChanged(from: model,
+                                 labelbackgroundColor: Constants.Colors.aliveLabelBackgroundColor,
+                                 textColor: Constants.Colors.aliveTextColor,
+                                 characterImage: mainImage)
+            case .dead:
+                setStatusChanged(from: model,
+                                 labelbackgroundColor: Constants.Colors.deadLabelBackgroundColor,
+                                 textColor: Constants.Colors.deadTextColor,
+                                 characterImage: grayscale(image: mainImage))
+            case .unknown:
+                setStatusChanged(from: model,
+                                 labelbackgroundColor: Constants.Colors.unknownLabelBackgroundColor,
+                                 textColor: Constants.Colors.unknownTextColor,
+                                 characterImage: mainImage)
+        }
     }
     
+    //MARK: set data
+    private func setStatusChanged(from model: ViewModel, labelbackgroundColor: UIColor, textColor: UIColor, characterImage: UIImage) {
+        let statusText = model.status.rawValue
+        
+        characterTitleLabel.text = model.name
+        characterDescription.text = "\(model.species), \(model.gender)"
+        placeLabel.text = model.origin
+        
+        characterStatus.backgroundColor = labelbackgroundColor
+        
+        characterStatus.setTitle(statusText.uppercased(), for: .normal)
+        characterStatus.setTitleColor(textColor, for: .normal)
+        
+        characterImageView.image = characterImage
+    }
     
-    //    @objc func watchButtonTapped() {
-    //        guard let index = index else { return }
-    //        delegate?.WatchEpisodesButtonTapped(index: index)
-    //    }
+    //MARK: b&w filter
     
+    private func grayscale(image: UIImage) -> UIImage {
+        let context = CIContext(options: nil)
+        if let filter = CIFilter(name: Constants.Strings.cIFilterName) {
+            filter.setValue(CIImage(image: image), forKey: kCIInputImageKey)
+            if let output = filter.outputImage {
+                if let cgImage = context.createCGImage(output, from: output.extent) {
+                    return UIImage(cgImage: cgImage)
+                }
+            }
+        }
+        return image
+    }
+    
+    //MARK: SDwebImage
+    private func configureImage(with model: String) -> UIImage {
+        let url = URL(string: model)
+        characterImageView.sd_setImage(with: url, completed: nil)
+        
+        return characterImageView.image ?? Constants.Images.defaultCharacter!
+    }
 }
 
 //MARK: - setConstraints
@@ -143,7 +186,7 @@ extension MainTableViewCell {
         
         let characterStackView = UIStackView(arrangedSubviews: [characterTitleLabel, characterDescription],
                                              axis: .vertical,
-                                             spacing: 4,
+                                             spacing: Constants.CGFloafs.Constraints.CharacterStackView.characterStackViewSpacing,
                                              distribution: .fillProportionally)
         
         
@@ -151,42 +194,44 @@ extension MainTableViewCell {
         NSLayoutConstraint.activate(
             [characterImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
              characterImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
-             characterImageView.heightAnchor.constraint(equalToConstant: 120),
-             characterImageView.widthAnchor.constraint(equalToConstant: 120)
-            ]
-        )
-        
-        addSubview(characterStatus)
-        NSLayoutConstraint.activate(
-            [characterStatus.topAnchor.constraint(equalTo: topAnchor,
-                                                  constant: 16),
-             characterStatus.trailingAnchor.constraint(equalTo: trailingAnchor),
-             characterStatus.heightAnchor.constraint(equalToConstant: 25),
-             characterStatus.widthAnchor.constraint(equalToConstant: 56)
+             characterImageView.heightAnchor.constraint(equalToConstant: Constants.CGFloafs.Constraints.characterImageViewHeightWidth),
+             characterImageView.widthAnchor.constraint(equalToConstant: Constants.CGFloafs.Constraints.characterImageViewHeightWidth)
             ]
         )
         
         addSubview(characterStackView)
         NSLayoutConstraint.activate(
             [characterStackView.topAnchor.constraint(equalTo: topAnchor,
-                                                     constant: 16),
+                                                     constant: Constants.CGFloafs.Constraints.CharacterStackView.characterStackViewTopAncor ),
              characterStackView.leadingAnchor.constraint(equalTo: characterImageView.trailingAnchor,
-                                                         constant: 18),
-             characterStackView.trailingAnchor.constraint(equalTo: characterStatus.leadingAnchor,
-                                                          constant: -5),
+                                                         constant: Constants.CGFloafs.Constraints.CharacterStackView.characterStackViewleadingAncor ),
+             characterStackView.trailingAnchor.constraint(equalTo: trailingAnchor,
+                                                          constant: Constants.CGFloafs.Constraints.CharacterStackView.characterStackViewTrailingAncor),
              characterStackView.bottomAnchor.constraint(equalTo: bottomAnchor,
-                                                        constant: -90)
+                                                        constant: Constants.CGFloafs.Constraints.CharacterStackView.characterStackViewBottomAncor )
             ]
         )
+        
+        addSubview(characterStatus)
+        NSLayoutConstraint.activate(
+            [characterStatus.topAnchor.constraint(equalTo: topAnchor,
+                                                  constant: Constants.CGFloafs.Constraints.characterStatusTopAncor),
+             characterStatus.trailingAnchor.constraint(equalTo: trailingAnchor),
+             characterStatus.heightAnchor.constraint(equalToConstant: Constants.CGFloafs.Constraints.characterStatusHeightAncor)
+            ]
+        )
+        
+        //MARK: WatchView
+        
         
         contentView.addSubview(watchButton)
         NSLayoutConstraint.activate(
             [watchButton.topAnchor.constraint(equalTo: characterStackView.bottomAnchor,
-                                              constant: 12),
+                                              constant: Constants.CGFloafs.Constraints.WatchView.watchButtonTopAncor),
              watchButton.leadingAnchor.constraint(equalTo: characterImageView.trailingAnchor,
-                                                  constant: 18),
-             watchButton.heightAnchor.constraint(equalToConstant: 35),
-             watchButton.widthAnchor.constraint(equalToConstant: 148)
+                                                  constant: Constants.CGFloafs.Constraints.WatchView.watchButtonLeadingAncor),
+             watchButton.heightAnchor.constraint(equalToConstant: Constants.CGFloafs.Constraints.WatchView.watchButtonHeightAncor),
+             watchButton.widthAnchor.constraint(equalToConstant: Constants.CGFloafs.Constraints.WatchView.watchButtonWidthAncor )
             ]
         )
         
@@ -204,21 +249,23 @@ extension MainTableViewCell {
         NSLayoutConstraint.activate(
             [watchImageView.centerYAnchor.constraint(equalTo: watchView.centerYAnchor),
              watchImageView.leadingAnchor.constraint(equalTo: watchView.leadingAnchor,
-                                                     constant: 12),
+                                                     constant: Constants.CGFloafs.Constraints.WatchView.watchImageViewLeadingAnchor),
              watchLabel.centerYAnchor.constraint(equalTo: watchView.centerYAnchor),
              watchLabel.leadingAnchor.constraint(equalTo: watchImageView.trailingAnchor,
-                                                 constant: 6)
+                                                 constant: Constants.CGFloafs.Constraints.WatchView.watchLabelLeadingAnchor)
             ]
         )
         
+        
+        //MARK: PlaceView
         contentView.addSubview(placeView)
         NSLayoutConstraint.activate(
             [placeView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,
-                                               constant: -16),
+                                               constant: Constants.CGFloafs.Constraints.PlaceView.placeViewBottomAnchor),
              placeView.leadingAnchor.constraint(equalTo: characterImageView.trailingAnchor,
-                                                constant: 18),
+                                                constant: Constants.CGFloafs.Constraints.PlaceView.placeViewLeadingAnchor),
              placeView.topAnchor.constraint(equalTo: watchButton.bottomAnchor,
-                                            constant: 10),
+                                            constant: Constants.CGFloafs.Constraints.PlaceView.placeViewTopAnchor),
              placeView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
             ]
         )
@@ -227,13 +274,13 @@ extension MainTableViewCell {
         placeView.addSubview(placeLabel)
         NSLayoutConstraint.activate(
             [placeButton.leadingAnchor.constraint(equalTo: characterImageView.trailingAnchor,
-                                                  constant: 18),
+                                                  constant: Constants.CGFloafs.Constraints.PlaceView.placeButtonLeadingAncor),
              placeButton.centerYAnchor.constraint(equalTo: placeView.centerYAnchor),
-             placeButton.heightAnchor.constraint(equalToConstant: 12),
-             placeButton.widthAnchor.constraint(equalToConstant: 8.4),
+             placeButton.heightAnchor.constraint(equalToConstant: Constants.CGFloafs.Constraints.PlaceView.placeButtonHeightAnchor),
+             placeButton.widthAnchor.constraint(equalToConstant: Constants.CGFloafs.Constraints.PlaceView.placeButtonWidthAnchor),
              placeLabel.centerYAnchor.constraint(equalTo: placeView.centerYAnchor),
              placeLabel.leadingAnchor.constraint(equalTo: placeButton.trailingAnchor,
-                                                 constant: 7.8)
+                                                 constant: Constants.CGFloafs.Constraints.PlaceView.placeLabelLeadingAncor)
             ]
         )
     }

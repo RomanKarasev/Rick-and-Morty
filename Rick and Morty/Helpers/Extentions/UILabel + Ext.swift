@@ -11,12 +11,12 @@ extension UILabel {
     
     convenience init(text: String, font: UIFont?, alignment: NSTextAlignment, textColor: UIColor) {
         self.init()
-        self.text = text
-        self.font = font
-        self.textColor = textColor
-        self.textAlignment = alignment
-        self.adjustsFontSizeToFitWidth = true
-        self.translatesAutoresizingMaskIntoConstraints = false
+        self.text                                       = text
+        self.font                                       = font
+        self.textColor                                  = textColor
+        self.textAlignment                              = alignment
+        self.adjustsFontSizeToFitWidth                  = true
+        self.translatesAutoresizingMaskIntoConstraints  = false
     }
 }
 

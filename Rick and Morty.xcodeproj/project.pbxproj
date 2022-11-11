@@ -20,6 +20,8 @@
 		74A082A9291D99A90039D776 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 74A082A8291D99A90039D776 /* SDWebImage */; };
 		74A082AB291D99A90039D776 /* SDWebImageMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 74A082AA291D99A90039D776 /* SDWebImageMapKit */; };
 		74A082AD291DC3770039D776 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A082AC291DC3770039D776 /* ViewModel.swift */; };
+		74A082AF291E323B0039D776 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A082AE291E323B0039D776 /* Constants.swift */; };
+		74A082B1291E32780039D776 /* UIColor + Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A082B0291E32780039D776 /* UIColor + Ext.swift */; };
 		74A4A9DC291D601F009AB341 /* UILabel + Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A4A9DB291D601F009AB341 /* UILabel + Ext.swift */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +39,8 @@
 		74A082A3291D7EAB0039D776 /* CharacterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterManager.swift; sourceTree = "<group>"; };
 		74A082A5291D7F390039D776 /* CharacterModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterModel.swift; sourceTree = "<group>"; };
 		74A082AC291DC3770039D776 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
+		74A082AE291E323B0039D776 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		74A082B0291E32780039D776 /* UIColor + Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor + Ext.swift"; sourceTree = "<group>"; };
 		74A4A9DB291D601F009AB341 /* UILabel + Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel + Ext.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -140,6 +144,7 @@
 			isa = PBXGroup;
 			children = (
 				747C71BD291D5511009AA4F2 /* Extentions */,
+				74A082AE291E323B0039D776 /* Constants.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -149,6 +154,7 @@
 			children = (
 				747C71BE291D5526009AA4F2 /* UIStackView + Ext.swift */,
 				74A4A9DB291D601F009AB341 /* UILabel + Ext.swift */,
+				74A082B0291E32780039D776 /* UIColor + Ext.swift */,
 			);
 			path = Extentions;
 			sourceTree = "<group>";
@@ -239,11 +245,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				74A082AD291DC3770039D776 /* ViewModel.swift in Sources */,
+				74A082AF291E323B0039D776 /* Constants.swift in Sources */,
 				747C71A2291D4941009AA4F2 /* MainViewController.swift in Sources */,
 				74A082A4291D7EAB0039D776 /* CharacterManager.swift in Sources */,
 				74A4A9DC291D601F009AB341 /* UILabel + Ext.swift in Sources */,
 				747C719E291D4941009AA4F2 /* AppDelegate.swift in Sources */,
 				747C71B9291D4DA1009AA4F2 /* MainTableViewCell.swift in Sources */,
+				74A082B1291E32780039D776 /* UIColor + Ext.swift in Sources */,
 				747C71BB291D5022009AA4F2 /* MainView.swift in Sources */,
 				74A082A6291D7F390039D776 /* CharacterModel.swift in Sources */,
 				747C71A0291D4941009AA4F2 /* SceneDelegate.swift in Sources */,

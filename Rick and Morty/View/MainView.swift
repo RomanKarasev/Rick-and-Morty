@@ -14,12 +14,12 @@ class MainView: UIView {
     // MARK: Properties
     
     let tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.bounces = false
-        tableView.backgroundColor = .clear
+        let tableView                                       = UITableView()
+        tableView.bounces                                   = false
+        tableView.backgroundColor                           = .clear
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(MainTableViewCell.self, forCellReuseIdentifier: MainTableViewCell.identifier)
-        tableView.separatorStyle = .none
+        tableView.separatorStyle                            = .none
         return tableView
     }()
     
@@ -34,15 +34,17 @@ class MainView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: Methods
     
+    // MARK: setConstraints
     private func setConstraints() {
         
         addSubview(tableView)
-        NSLayoutConstraint.activate([tableView.topAnchor.constraint(equalTo: topAnchor, constant: 90),
-                                     tableView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 24),
-                                     tableView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -24),
-                                     tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ])
+        NSLayoutConstraint.activate(
+            [tableView.topAnchor.constraint(equalTo: topAnchor, constant: Constants.CGFloafs.Constraints.tableView.topAncor),
+             tableView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.CGFloafs.Constraints.tableView.leadingAncor),
+             tableView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.CGFloafs.Constraints.tableView.trailingAnchor),
+             tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            ]
+        )
     }
 }

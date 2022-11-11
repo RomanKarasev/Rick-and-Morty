@@ -7,13 +7,21 @@
 
 import UIKit
 
-class MainViewController: UIViewController {
+
+//MARK: - MainViewController
+
+final class MainViewController: UIViewController {
     
-    let mainView = MainView()
-    var maxCountOfPage: Int?
+    // MARK: Properties
+    
+    let mainView         = MainView()
+    var maxCountOfPage   : Int?
     var countOfCharacter = 0
-    let cell = MainTableViewCell()
-    var results = [Result]()
+    var results          = [Result]()
+    let cell             = MainTableViewCell()
+    
+    
+    // MARK: View life cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,26 +30,11 @@ class MainViewController: UIViewController {
         setCharacter()
     }
     
-    func setCharacter() {
-        CharacterManager.getMainCharacter { characterData in
-            self.maxCountOfPage = characterData.info.pages
-            self.results = characterData.results
-            guard let countOfPage = self.maxCountOfPage else { return }
-            for page in 2...countOfPage {
-                CharacterManager.getCharacterFrom(page: page, completion: { characterData in
-                    self.countOfCharacter += characterData.results.count
-                    self.results += characterData.results
-                    DispatchQueue.main.async {
-                        self.mainView.tableView.reloadData()
-                    }
-                })
-            }
-        }
-    }
-    
     override func loadView() {
         view = mainView
     }
+    
+    // MARK: Methods
     
     private func setView() {
         view.backgroundColor = .systemBackground
@@ -49,15 +42,29 @@ class MainViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
     }
     
+    private func setCharacter() {
+#warning("Настроить скорость отображение чб изображения")
+        CharacterManager.getMainCharacter { characterData in
+            self.maxCountOfPage     = characterData.info.pages
+            self.results            = characterData.results
+            guard let countOfPage   = self.maxCountOfPage else { return }
+            for page in 2...countOfPage {
+                CharacterManager.getCharacterFrom(page: page, completion: { characterData in
+                    self.countOfCharacter   += characterData.results.count
+                    self.results            += characterData.results
+                    DispatchQueue.main.async {
+                        self.mainView.tableView.reloadData()
+                    }
+                }
+                )
+            }
+        }
+    }
+    
     private func configureTableView() {
         mainView.tableView.delegate   = self
         mainView.tableView.dataSource = self
     }
-    
-    //    func watchEpisodes(index: IndexPath) {
-    //            print(index)
-    //        }
-    
 }
 
 //MARK: - UITableViewDelegate, UITableViewDataSource
@@ -75,17 +82,6 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 152
+        return Constants.CGFloafs.heightForRow
     }
 }
-
-
-////MARK: - WatchEpisodes
-//
-//extension MainViewController: WatchEpisodesButton {
-//    func WatchEpisodesButtonTapped(index: IndexPath) {
-//        watchEpisodes(index: index)
-//    }
-//}
-
-
